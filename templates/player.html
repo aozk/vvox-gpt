@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ChatGPT音声応答</title>
+</head>
+<body>
+    <h1>ChatGPTからの応答</h1>
+    <p>{{ message }}</p>
+    <audio controls autoplay>
+        <source src="{{ audio_url }}" type="audio/wav">
+        お使いのブラウザはaudioタグをサポートしていません。
+    </audio>
+</body>
+</html>
