@@ -28,6 +28,7 @@ jobs:
       - name: Run tests
         run: |
           . .venv/bin/activate
+          export OPENAI_API_KEY="test-dummy-key"
           PYTHONPATH=. pytest --cov=main tests/
 
       - name: Upload coverage report
