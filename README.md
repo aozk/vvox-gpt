@@ -1,5 +1,7 @@
 # VOICEVOX-GPT
 
+![Test](https://github.com/aozk/vvox-gpt/actions/workflows/test.yml/badge.svg)
+
 📢 ChatGPT の応答を VOICEVOX エンジンで音声合成し、Web ブラウザで再生する FastAPI アプリケーションです。
 個人の趣味でチクチクと育てています。
 
