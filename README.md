@@ -72,12 +72,14 @@ extention/voicevox_engine-windows-cpu-0.23.0/windows-cpu/run.exe
 uvicorn main:app --reload
 ```
 
-`http://localhost:8000/chattts?prompt=こんにちは` にアクセスすると、
-ChatGPT の返答を読み上げるページにリダイレクトされます。
+`http://localhost:8000/form` にアクセスすると、 ChatGPT にメッセージを送ることができます。
+そのあとは画面の指示に従ってください。
 
 ---
 
 ## 🧪 テスト実行
+
+`pytest` をインストールした後に、以下を実行してください。
 
 ```bash
 $env:PYTHONPATH="."; pytest --cov=main tests/
