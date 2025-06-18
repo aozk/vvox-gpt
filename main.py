@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi import Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -84,8 +85,12 @@ def generate_audio(job_id: str, prompt: str):
 # 音声生成を非同期で開始し、結果表示ページへリダイレクト
 
 
-@app.get("/chattts")
+@app.get("/chattts", deprecated=True)
 def chattts_redirect(prompt: str):
+    """
+    【非推奨】旧バージョンの音声生成エンドポイントです。
+    代わりに /form エンドポイントを使用してください。
+    """
     job_id = str(uuid.uuid4())
     Thread(target=generate_audio, args=(job_id, prompt)).start()
     return RedirectResponse(f"/result/{job_id}", status_code=303)
@@ -113,3 +118,15 @@ async def show_result(request: Request, job_id: str):
             "audio_url": result["audio_url"],
         }
     )
+
+
+@app.get("/form", response_class=HTMLResponse)
+async def show_form(request: Request):
+    return templates.TemplateResponse("form.html", {"request": request})
+
+
+@app.post("/chattts")
+async def chattts_form(request: Request, prompt: str = Form(...)):
+    job_id = str(uuid.uuid4())
+    Thread(target=generate_audio, args=(job_id, prompt)).start()
+    return RedirectResponse(f"/result/{job_id}", status_code=303)
