@@ -40,6 +40,12 @@ job_results = {}
 
 
 def generate_audio(job_id: str, prompt: str):
+    """
+    音声生成を行う非同期関数
+
+    :param job_id: ジョブ識別子
+    :param prompt: ユーザーからの入力テキスト
+    """
     try:
         # ChatGPT による応答生成
         response = openai.chat.completions.create(
@@ -82,24 +88,15 @@ def generate_audio(job_id: str, prompt: str):
         }
         print(f"[ERROR] 音声生成失敗 (job_id={job_id}): {e}")
 
-# 音声生成を非同期で開始し、結果表示ページへリダイレクト
-
-
-@app.get("/chattts", deprecated=True)
-def chattts_redirect(prompt: str):
-    """
-    【非推奨】旧バージョンの音声生成エンドポイントです。
-    代わりに /form エンドポイントを使用してください。
-    """
-    job_id = str(uuid.uuid4())
-    Thread(target=generate_audio, args=(job_id, prompt)).start()
-    return RedirectResponse(f"/result/{job_id}", status_code=303)
-
-# 結果表示ページ：完了していれば再生ページ表示、未完なら再試行を促す
-
 
 @app.get("/result/{job_id}", response_class=HTMLResponse)
 async def show_result(request: Request, job_id: str):
+    """
+    音声生成結果を表示するエンドポイント
+
+    :param request: FastAPIのリクエストオブジェクト
+    :param job_id: ジョブ識別子
+    """
     if job_id not in job_results:
         return HTMLResponse(
             content="音声生成中です。数秒後に再読み込みしてください。", status_code=200)
@@ -122,11 +119,22 @@ async def show_result(request: Request, job_id: str):
 
 @app.get("/form", response_class=HTMLResponse)
 async def show_form(request: Request):
+    """
+    フォームを表示するエンドポイント
+
+    :param request: FastAPIのリクエストオブジェクト
+    """
     return templates.TemplateResponse("form.html", {"request": request})
 
 
 @app.post("/chattts")
 async def chattts_form(request: Request, prompt: str = Form(...)):
+    """
+    フォームからのPOSTリクエストを処理し、音声生成を開始するエンドポイント
+
+    :param request: FastAPIのリクエストオブジェクト
+    :param prompt: ユーザーからの入力テキスト
+    """
     job_id = str(uuid.uuid4())
     Thread(target=generate_audio, args=(job_id, prompt)).start()
     return RedirectResponse(f"/result/{job_id}", status_code=303)
